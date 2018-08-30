@@ -2,13 +2,12 @@
 // Created by simplehe on 2018/8/29.
 //
 
-#ifndef CHAPTER_3_TINTSTACK_H
-#define CHAPTER_3_TINTSTACK_H
-#define DEFAULT_SIZE 1000
+#ifndef STUDY_TINTSTACK_H
+#define STUDY_TINTSTACK_H
+#define DEFAULT_SIZE 100
 
 class TIntStack {
 public:
-
     TIntStack(unsigned int stackSize = DEFAULT_SIZE);
 
     TIntStack(const TIntStack &that);
@@ -24,10 +23,9 @@ public:
     unsigned int HowMany() const;
 
 private:
-    int *_sp;
+    int      *_sp;
     unsigned _count;
     unsigned _size;
 };
 
-
-#endif //CHAPTER_3_TINTSTACK_H
+#endif //STUDY_TINTSTACK_H
