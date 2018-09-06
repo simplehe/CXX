@@ -1,13 +1,13 @@
-//
-// Created by simplehe on 2018/8/29.
-//
-
 #include <iostream>
 
 using namespace std;
 
 int main() {
-    cout << "hello world" << endl;
-    return 0;
-}
+    char *p = new char[1000];
+    char *q = new char[1000];
 
+    p = q; //无用单元
+
+
+
+}

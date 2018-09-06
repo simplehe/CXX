@@ -3,4 +3,4 @@ project(chapter_3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(chapter_3 main.cpp TIntStack.cpp TIntStack.h)
+add_executable(chapter_3 main.cpp TIntStack.cpp TIntStack.h TPerson.cpp TPerson.h)
