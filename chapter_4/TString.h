@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cctype>
+
 /*
  * 写时复制：
  * 1.共享资源不应该导致太多额外的成本
@@ -51,8 +52,15 @@ public:
     TString &ToUpper();
 
 private:
+    struct StringRep {
+        char *_str;//实际字符串
+        unsigned _refCount;//对它引用的数目
+        unsigned _length;//字符串中字符的数据
+    };
+    StringRep *_rp;
+
     unsigned _length;
-    char     *_str;
+    char *_str;
 };
 
 TString operator+(const TString &one, const TString &two);

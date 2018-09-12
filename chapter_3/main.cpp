@@ -2,6 +2,8 @@
 
 using namespace std;
 
+
+
 int main() {
     char *p = new char[1000];
     char *q = new char[1000];

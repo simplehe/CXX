@@ -5,69 +5,50 @@
 #include "TString.h"
 
 TString::TString() {
-    _str    = 0;
-    _length = 0;
+    _rp = new StringRep;
+    _rp->_refCount = 1;
+    _rp->_length = 0;
+    _rp->_str = 0;
 }
 
 TString::TString(const char *s) {
-    if (s && *s) {
-        _length = strlen(s);
-        _str    = new char[_length + 1];
-        strcpy(_str, s);
-    } else {
-        _str    = 0;
-        _length = 0;
-    }
+    _rp = new StringRep;
+    _rp->_refCount = 1;
+    _rp->_length = strlen(s);
+    _rp->_str = new char[_rp->_length + 1];
+    strcpy(_rp->_str, s);
 }
 
 TString::TString(char aChar) {
-    if (aChar) {
-        _str = new char[2];
-        _str[0] = aChar;
-        _str[1] = '\0';
-        _length = 1;
-    } else {
-        _str    = 0;
-        _length = 0;
-    }
+    _rp = new StringRep;
+    _rp->_length = 1;
+    _rp->_str = new char[2];
+    _rp->_str[0] = aChar;
+    _rp->_str[1] = 0;
+    _rp->_refCount = 1;
 }
 
 TString::TString(const TString &arg) {
-    if (arg._str != 0) {
-        this->_str = new char[strlen(arg._str) + 1];
-        strcpy(this->_str, arg._str);
-        _length = arg._length;
-    } else {
-        _str = 0, _length = 0;
-    }
+    arg._rp->_refCount++;
+    this->_rp = arg._rp;
 }
 
 TString::~TString() {
-    if (_str != 0) {
-        delete[] _str;
-        _length = 0;
+    if (--_rp->_refCount == 0) {
+        delete[]_rp->_str;
+        delete _rp;
     }
 }
 
 TString &TString::operator=(const TString &arg) {
     if (this == &arg)return *this;
-    if (this->_length >= arg._length) {
-        if (arg._str != 0) {
-            strcpy(this->_str, arg._str);
-        } else {
-            this->_str = 0;
-        }
-        this->_length = arg._length;
-        return *this;
+    arg._rp->_refCount++;
+    //递减和测试，是否仍然再使用
+    if (--this->_rp->_refCount == 0) {
+        delete[] this->_rp->_str;
+        delete[] this->_rp;
     }
-    delete[]_str;
-    this->_length = arg.Size();
-    if (_length) {
-        _str = new char[_length + 1];
-        strcpy(_str, arg._str);
-    } else {
-        _str = 0;
-    }
+    this->_rp = arg._rp;
     return *this;
 }
 
@@ -129,14 +110,26 @@ const char &TString::operator[](unsigned n) const {
 }
 
 TString &TString::ToLower() {
-    if (_str && *_str) {
-        char *p = _str;
-        while (p) {
+    char *p;
+    if (_rp->_refCount > 1) {
+        unsigned len = this->_rp->_length;
+        p = new char[len + 1];
+        strcpy(p, this->_rp->_str);
+        this->_rp->_refCount--;
+        this->_rp = new StringRep;
+        this->_rp->_refCount = 1;
+        this->_rp->_length = len;
+        this->_rp->_str = p;
+    }
+
+    if (p != 0) {
+        while (*p) {
             *p = tolower(*p);
             ++p;
         }
     }
     return *this;
+
 }
 
 TString &TString::ToUpper() {
